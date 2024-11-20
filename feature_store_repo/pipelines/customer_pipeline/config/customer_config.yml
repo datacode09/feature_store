@@ -1,16 +1,13 @@
-features:
-- name: average_purchase_value
-  transformation: purchase_amount / transaction_count
-- name: days_since_last_purchase
-  transformation: DATEDIFF(current_date, last_purchase_date)
 materialized_table: customer_feature_table
 source_tables:
-- key_column: customer_id
-  required_columns:
-  - purchase_amount
-  - transaction_count
-  source: customer_data
-- key_column: customer_id
-  required_columns:
-  - last_purchase_date
-  source: transaction_data
+  - source: customer_data
+    key_column: customer_id
+    required_columns: [purchase_amount, transaction_count]
+  - source: transaction_data
+    key_column: customer_id
+    required_columns: [last_purchase_date]
+features:
+  - name: average_purchase_value
+    transformation: "purchase_amount / transaction_count"
+  - name: days_since_last_purchase
+    transformation: "DATEDIFF(current_date, last_purchase_date)"
