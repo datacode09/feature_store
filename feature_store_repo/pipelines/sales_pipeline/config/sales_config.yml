@@ -1,0 +1,12 @@
+features:
+- name: total_sales
+  transformation: SUM(sale_amount)
+- name: sales_frequency
+  transformation: COUNT(sale_id) / DATEDIFF(max(sale_date), min(sale_date))
+materialized_table: sales_feature_table
+source_tables:
+- key_column: sale_id
+  required_columns:
+  - sale_amount
+  - sale_date
+  source: sales_data

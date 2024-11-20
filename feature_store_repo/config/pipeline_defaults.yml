@@ -1,0 +1,4 @@
+defaults:
+  enable_logging: true
+  output_format: parquet
+  partition_column: event_time

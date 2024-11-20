@@ -1,0 +1,5 @@
+entities:
+- key_column: customer_id
+  name: customer
+- key_column: sale_id
+  name: sales

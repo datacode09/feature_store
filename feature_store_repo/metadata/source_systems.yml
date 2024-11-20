@@ -1,0 +1,9 @@
+source_systems:
+  customer_data:
+    connection: hive_crm
+    system_name: CRM
+    table: customers_raw
+  transaction_data:
+    connection: hive_sales
+    system_name: SalesDB
+    table: transactions_raw
