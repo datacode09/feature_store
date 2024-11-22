@@ -158,14 +158,14 @@ The refactored `customer_universe_pipeline` dynamically uses metadata and shared
 
 ### **7. POC Overview**
 
-**Objective**:  
+#### **Objective**:  
 Refactor the `Opacct Pipeline` as a proof-of-concept (POC) for the new repository architecture. This POC will demonstrate the benefits of modularity, metadata-driven configurations, and shared utilities, serving as a template for other pipelines.
 
 ---
 
-### **2. Project Scope**
+#### **Project Scope**
 
-#### **In-Scope**:
+##### **In-Scope**:
 - Refactor the `Opacct Pipeline` to:
   - Modularize feature engineering logic.
   - Utilize centralized metadata for source systems, features, and linkages.
@@ -173,13 +173,13 @@ Refactor the `Opacct Pipeline` as a proof-of-concept (POC) for the new repositor
 - Implement unit and E2E tests for the pipeline.
 - Document pipeline setup and execution.
 
-#### **Out-of-Scope**:
+##### **Out-of-Scope**:
 - Refactoring pipelines other than `Opacct`.
 - Introducing new business logic or features unless necessary for metadata integration.
 
----
 
-### **3. Deliverables**
+
+#### **Deliverables**
 
 1. **Refactored `Opacct Pipeline`**:
    - Modularized pipeline script using metadata and shared utilities.
@@ -192,9 +192,9 @@ Refactor the `Opacct Pipeline` as a proof-of-concept (POC) for the new repositor
 5. **Documentation**:
    - Pipeline execution guide and feature catalog.
 
----
 
-### **4. Milestones and Timeline**
+
+#### **Milestones and Timeline**
 
 | **Milestone**                        | **Tasks**                                                                                          | **Duration** |
 |--------------------------------------|---------------------------------------------------------------------------------------------------|--------------|
@@ -211,7 +211,7 @@ Refactor the `Opacct Pipeline` as a proof-of-concept (POC) for the new repositor
 
 ---
 
-### **5. Project Risks**
+#### ** Project Risks**
 
 | **Risk**                                | **Impact**                                                                                       | **Mitigation Strategy**                                                                                     |
 |-----------------------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
@@ -222,7 +222,7 @@ Refactor the `Opacct Pipeline` as a proof-of-concept (POC) for the new repositor
 
 ---
 
-### **6. Success Metrics**
+#### **Success Metrics**
 
 1. **Modularity**:
    - 100% of the `Opacct Pipeline` logic modularized and reusable.
