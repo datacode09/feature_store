@@ -145,7 +145,7 @@ Below are sample **ad hoc scripts** for common scenarios such as backfilling, ad
 
 ---
 
-### **Backfill Script: `adhoc_scripts/backfill_feature.sas`**
+#### **Backfill Script: `adhoc_scripts/backfill_feature.sas`**
 
 **Purpose**: Recompute and backfill specific features for historical data in the `Opacct` dataset.
 
@@ -179,7 +179,7 @@ Below are sample **ad hoc scripts** for common scenarios such as backfilling, ad
 
 ---
 
-### **Insert New Feature Script: `adhoc_scripts/insert_new_feature.sas`**
+#### **Insert New Feature Script: `adhoc_scripts/insert_new_feature.sas`**
 
 **Purpose**: Add a new feature to the existing pipeline and materialize it for historical data.
 
@@ -225,7 +225,7 @@ quit;
 
 ---
 
-### **Manage Partitions Script: `adhoc_scripts/manage_partitions.sas`**
+#### **Manage Partitions Script: `adhoc_scripts/manage_partitions.sas`**
 
 **Purpose**: Add, drop, or update partitions for a Hive table used in the `Opacct` pipeline.
 
