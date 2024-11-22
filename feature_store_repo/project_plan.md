@@ -141,7 +141,136 @@ The refactored `customer_universe_pipeline` dynamically uses metadata and shared
 %log_message(Customer Universe Pipeline Completed Successfully);
 ```
 
+Below are sample **ad hoc scripts** for common scenarios such as backfilling, adding new features, and managing Hive partitions. These scripts are designed to integrate with the proposed repository structure.
 
+---
+
+### ** Backfill Script: `adhoc_scripts/backfill_feature.sas`**
+
+**Purpose**: Recompute and backfill specific features for historical data in the `Opacct` dataset.
+
+```sas
+%include "../utils/logger.sas";
+%include "../utils/database_utils.sas";
+%include "../feature_materialization/opacct_features.sas";
+%include "../config/global_config.sas";
+%include "../config/pipeline_configs/opacct_pipeline_config.sas";
+
+%let feature_list = total_transaction_value, average_monthly_balance;
+
+/* Log start of backfill */
+%log_message(Starting backfill for features: &feature_list.);
+
+/* Step 1: Load historical data */
+%log_message(Loading historical data from source table.);
+%database_load(source_table=opacct_source_table, target_table=work.opacct_historical);
+
+/* Step 2: Recompute features */
+%log_message(Recomputing features for historical data.);
+%materialize_opacct_features(input_table=work.opacct_historical, output_table=work.opacct_backfilled);
+
+/* Step 3: Write backfilled features to target */
+%log_message(Writing backfilled features to target table.);
+%database_write(source_table=work.opacct_backfilled, target_table=opacct_feature_table);
+
+/* Log completion */
+%log_message(Backfill for features: &feature_list. completed successfully.);
+```
+
+---
+
+### **Insert New Feature Script: `adhoc_scripts/insert_new_feature.sas`**
+
+**Purpose**: Add a new feature to the existing pipeline and materialize it for historical data.
+
+```sas
+%include "../utils/logger.sas";
+%include "../utils/database_utils.sas";
+%include "../config/global_config.sas";
+%include "../config/pipeline_configs/opacct_pipeline_config.sas";
+
+%let new_feature_name = days_since_last_activity;
+
+/* Log start of feature addition */
+%log_message(Adding new feature: &new_feature_name.);
+
+/* Step 1: Load historical data */
+%log_message(Loading historical data from source table.);
+%database_load(source_table=opacct_source_table, target_table=work.opacct_historical);
+
+/* Step 2: Compute the new feature */
+data work.opacct_new_feature;
+    set work.opacct_historical;
+    /* Example: Calculate days since the last activity */
+    days_since_last_activity = intck('day', last_transaction_date, today());
+run;
+
+/* Step 3: Merge with existing features */
+%log_message(Merging new feature with existing feature set.);
+proc sql;
+    create table work.opacct_updated as
+    select a.*, b.days_since_last_activity
+    from work.opacct_features a
+    left join work.opacct_new_feature b
+    on a.account_id = b.account_id;
+quit;
+
+/* Step 4: Write updated features to target */
+%log_message(Writing updated feature set to target table.);
+%database_write(source_table=work.opacct_updated, target_table=opacct_feature_table);
+
+/* Log completion */
+%log_message(New feature: &new_feature_name. added successfully.);
+```
+
+---
+
+### **Manage Partitions Script: `adhoc_scripts/manage_partitions.sas`**
+
+**Purpose**: Add, drop, or update partitions for a Hive table used in the `Opacct` pipeline.
+
+```sas
+%include "../utils/logger.sas";
+%include "../utils/database_utils.sas";
+%include "../config/global_config.sas";
+
+%let action = add; /* Options: add, drop, update */
+%let partition_date = '2024-01-01';
+%let target_table = opacct_feature_table;
+
+/* Log start of partition management */
+%log_message(Starting partition management for table: &target_table., action: &action.);
+
+/* Perform action */
+%if &action = add %then %do;
+    proc sql;
+        alter table &target_table add partition (load_date = &partition_date.);
+    quit;
+    %log_message(Partition &partition_date. added to table: &target_table.);
+%end;
+
+%else %if &action = drop %then %do;
+    proc sql;
+        alter table &target_table drop partition (load_date = &partition_date.);
+    quit;
+    %log_message(Partition &partition_date. dropped from table: &target_table.);
+%end;
+
+%else %if &action = update %then %do;
+    proc sql;
+        alter table &target_table drop partition (load_date = &partition_date.);
+        alter table &target_table add partition (load_date = &partition_date.);
+    quit;
+    %log_message(Partition &partition_date. updated in table: &target_table.);
+%end;
+
+%else %do;
+    %log_message(Invalid action specified for partition management.);
+%end;
+
+/* Log completion */
+%log_message(Partition management for table: &target_table., action: &action., completed successfully.);
+```
 
 ### **6. Benefits of Refactoring**
 
